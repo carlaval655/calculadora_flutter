@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.deepOrange,
       ),
       home: const MyHomePage(title: 'Calculadora'),
     );
@@ -40,12 +40,16 @@ class _MyHomePageState extends State<MyHomePage> {
   String operacion="";
 
   buttonPressed(String buttonText){
-    if (buttonText=="Clear"){
+    if (buttonText=="AC"){
       _output="0";
       num1=0.0;
       num2=0.0;
       operacion="";
-    } else if(buttonText=="+" || buttonText=="-" || buttonText=="X" || buttonText=="/"){//Significa que el usuario ya ingreso un numero e ingresara el siguiente
+    } else if(buttonText=="del"){
+      int pos = _output.length - 1;
+      _output = _output.substring(0, pos);
+
+    }else if(buttonText=="+" || buttonText=="-" || buttonText=="X" || buttonText=="/"){//Significa que el usuario ya ingreso un numero e ingresara el siguiente
       num1=double.parse(output);
 
       operacion=buttonText;
@@ -95,18 +99,18 @@ class _MyHomePageState extends State<MyHomePage> {
     return Expanded(
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.all(24),
-
-          // shape: CircleBorder(),
+          padding: EdgeInsets.all(30),
+          backgroundColor: Colors.blueGrey,
+          shape: CircleBorder(),
         ), 
         onPressed: () {  
           buttonPressed(buttonText);
         },
         child: Text(buttonText,
         style: TextStyle(
-          fontSize: 20,
+          fontSize: 25,
           fontWeight: FontWeight.bold,
-          color: Colors.black,
+          color: Colors.white,
         ),
         ),
       )
@@ -122,55 +126,59 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Container(
         child: Column(children: <Widget>[
           Container(
+            decoration: BoxDecoration(color: Colors.black),
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(
-              vertical: 24,
+              vertical: 83.1,
               horizontal: 12,
             ),
             child: Text(output,
             style:TextStyle(
+              color: Colors.white,
               fontSize: 36,
               fontWeight: FontWeight.bold,
             ))),
-          const Expanded(
-            child: Divider(),
+
+          Container(
+            decoration: BoxDecoration(color:Colors.black),
+            padding: EdgeInsets.all(2),
+            child: Column(children: [
+              Row(
+                children: [
+                buildButton("7"),
+                buildButton('8'),
+                buildButton('9'),
+                buildButton('/'),
+              ]),
+          
+              Row(children: [
+                buildButton('4'),
+                buildButton('5'),
+                buildButton('6'),
+                buildButton('X'),
+              ]),
+          
+              Row(children: [
+                buildButton('1'),
+                buildButton('2'),
+                buildButton('3'),
+                buildButton('-'),
+              ]),
+          
+              Row(children: [
+                buildButton('.'),
+                buildButton('0'),
+                buildButton('='),
+                buildButton('+'),
+              ]),
+          
+              Row(children: [
+                buildButton('AC'),
+                buildButton("del"),
+              ]),
+          
+            ]),
           ),
-          Column(children: [
-
-            Row(children: [
-              buildButton("7"),
-              buildButton('8'),
-              buildButton('9'),
-              buildButton('/'),
-            ]),
-
-            Row(children: [
-              buildButton('4'),
-              buildButton('5'),
-              buildButton('6'),
-              buildButton('X'),
-            ]),
-
-            Row(children: [
-              buildButton('1'),
-              buildButton('2'),
-              buildButton('3'),
-              buildButton('-'),
-            ]),
-
-            Row(children: [
-              buildButton('.'),
-              buildButton('0'),
-              buildButton('00'),
-              buildButton('+'),
-            ]),
-
-            Row(children: [
-              buildButton('Clear'),
-              buildButton('='),
-            ]),
-
-          ]),
         ]),
       ),
     );
