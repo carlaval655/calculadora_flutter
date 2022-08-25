@@ -12,9 +12,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.deepOrange,
+        primarySwatch: Colors.indigo,
       ),
       home: const MyHomePage(title: 'Calculadora'),
     );
@@ -99,8 +98,30 @@ class _MyHomePageState extends State<MyHomePage> {
     return Expanded(
       child: OutlinedButton(
         style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.all(30),
+          padding: EdgeInsets.all(25),
           backgroundColor: Colors.blueGrey,
+          shape: CircleBorder(),
+        ), 
+        onPressed: () {  
+          buttonPressed(buttonText);
+        },
+        child: Text(buttonText,
+        style: TextStyle(
+          fontSize: 25,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        ),
+      )
+      );
+  }
+
+ Widget buildOperationButton(String buttonText) {
+    return Expanded(
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          padding: EdgeInsets.all(25),
+          backgroundColor: Colors.indigo,
           shape: CircleBorder(),
         ), 
         onPressed: () {  
@@ -129,7 +150,7 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: BoxDecoration(color: Colors.black),
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(
-              vertical: 83.1,
+              vertical: 40.7,
               horizontal: 12,
             ),
             child: Text(output,
@@ -148,33 +169,33 @@ class _MyHomePageState extends State<MyHomePage> {
                 buildButton("7"),
                 buildButton('8'),
                 buildButton('9'),
-                buildButton('/'),
+                buildOperationButton('/'),
               ]),
           
               Row(children: [
                 buildButton('4'),
                 buildButton('5'),
                 buildButton('6'),
-                buildButton('X'),
+                buildOperationButton('X'),
               ]),
           
               Row(children: [
                 buildButton('1'),
                 buildButton('2'),
                 buildButton('3'),
-                buildButton('-'),
+                buildOperationButton('-'),
               ]),
           
               Row(children: [
-                buildButton('.'),
+                buildOperationButton('.'),
                 buildButton('0'),
-                buildButton('='),
-                buildButton('+'),
+                buildOperationButton('='),
+                buildOperationButton('+'),
               ]),
           
               Row(children: [
-                buildButton('AC'),
-                buildButton("del"),
+                buildOperationButton('AC'),
+                buildOperationButton("del"),
               ]),
           
             ]),
