@@ -1,7 +1,11 @@
-// ignore_for_file: prefer_const_constructors, avoid_print
 
+import 'package:calculadora_flutter/bloc/bloc_provider.dart';
+import 'package:calculadora_flutter/bloc/calculadora_bloc.dart';
 import 'package:flutter/material.dart';
 
+import 'bloc/calculadora_bloc.dart';
+import 'widgets/boton.dart';
+final List<String> botones = ['C','+/-','%','DEL','7','8','9','/','4','5','6','x','1','2','3','-','0','.','=','+'];
 void main() {
   runApp(const MyApp());
 }
@@ -11,197 +15,103 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        primarySwatch: Colors.indigo,
-      ),
-      home: const MyHomePage(title: 'Calculadora'),
+    return BlocProvider(
+      bloc: CalculadoraBloc(),
+      child: MaterialApp(
+        title: 'Calculator',
+        theme: ThemeData(
+          primarySwatch: Colors.indigo
+        ),
+        home: const MyHomePage(),
+      )
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const MyHomePage({Key? key}) : super(key: key);
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
-  String output = "";
-
-  String _output = ""; //Output temporal para cambiar de estado output
-  double num1=0.0;
-  double num2=0.0;
-  String operacion="";
-
-  buttonPressed(String buttonText){
-    if (buttonText=="AC"){
-      _output="0";
-      num1=0.0;
-      num2=0.0;
-      operacion="";
-    } else if(buttonText=="del"){
-      int pos = _output.length - 1;
-      _output = _output.substring(0, pos);
-
-    }else if(buttonText=="+" || buttonText=="-" || buttonText=="X" || buttonText=="/"){//Significa que el usuario ya ingreso un numero e ingresara el siguiente
-      num1=double.parse(output);
-
-      operacion=buttonText;
-
-      _output = "0";
-    } else if (buttonText=="."){
-      if(_output.contains(".")){
-        print("El numero ya tiene decimales");
-        return;
-      } else{
-        _output=_output+buttonText;
-      }
-    } else if(buttonText=="="){
-      num2= double.parse(output);
-      if (operacion=="+"){
-        _output=(num1+num2).toString();
-      }
-      if (operacion=="-"){
-        _output=(num1-num2).toString();
-      }
-      if (operacion=="X"){
-        _output=(num1*num2).toString();
-      }
-      if (operacion=="/"){
-        _output=(num1/num2).toString();
-      }
-
-      num1 = 0.0;
-      num2 = 0.0;
-      operacion = "";
-
-    } else{
-      _output = _output + buttonText;
-    }
-
-    print(_output);
-
-    setState(() {
-      
-      output=double.parse(_output).toStringAsFixed(2);
-
-    });
-
-  }
-
-  Widget buildButton(String buttonText) {
-    return Expanded(
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.all(25),
-          backgroundColor: Colors.blueGrey,
-          shape: CircleBorder(),
-        ), 
-        onPressed: () {  
-          buttonPressed(buttonText);
-        },
-        child: Text(buttonText,
-        style: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-        ),
-      )
-      );
-  }
-
- Widget buildOperationButton(String buttonText) {
-    return Expanded(
-      child: OutlinedButton(
-        style: OutlinedButton.styleFrom(
-          padding: EdgeInsets.all(25),
-          backgroundColor: Colors.indigo,
-          shape: CircleBorder(),
-        ), 
-        onPressed: () {  
-          buttonPressed(buttonText);
-        },
-        child: Text(buttonText,
-        style: TextStyle(
-          fontSize: 25,
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-        ),
-      )
-      );
-  }
+  var input = '', answer = '';
+  
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context){
+    final blocCalculadora = BlocProvider.of<CalculadoraBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: const Text("Calculadora"),
       ),
-      body: Container(
-        child: Column(children: <Widget>[
-          Container(
-            decoration: BoxDecoration(color: Colors.black),
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.symmetric(
-              vertical: 40.7,
-              horizontal: 12,
-            ),
-            child: Text(output,
-            style:TextStyle(
-              color: Colors.white,
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-            ))),
-
-          Container(
-            decoration: BoxDecoration(color:Colors.black),
-            padding: EdgeInsets.all(2),
-            child: Column(children: [
-              Row(
-                children: [
-                buildButton("7"),
-                buildButton('8'),
-                buildButton('9'),
-                buildOperationButton('/'),
-              ]),
-          
-              Row(children: [
-                buildButton('4'),
-                buildButton('5'),
-                buildButton('6'),
-                buildOperationButton('X'),
-              ]),
-          
-              Row(children: [
-                buildButton('1'),
-                buildButton('2'),
-                buildButton('3'),
-                buildOperationButton('-'),
-              ]),
-          
-              Row(children: [
-                buildOperationButton('.'),
-                buildButton('0'),
-                buildOperationButton('='),
-                buildOperationButton('+'),
-              ]),
-          
-              Row(children: [
-                buildOperationButton('AC'),
-                buildOperationButton("del"),
-              ]),
-          
-            ]),
+      backgroundColor: Colors.white38,
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child:Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(20),
+                    alignment: Alignment.centerRight,
+                    child: Text(
+                      input,
+                      style: const TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(15),
+                    alignment: Alignment.centerRight,
+                    child: _buildAnswer(blocCalculadora),
+                    )
+                ]
+              )
+            )
           ),
-        ]),
-      ),
+          Expanded(
+            flex: 3,
+            child: Container(
+              child: GridView.builder(
+                itemCount: botones.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 4,
+                ),
+                itemBuilder: (BuildContext context, int index){
+                  return Boton(
+                    botonPresionado:(){
+                      print("Se presiono $index");
+                      blocCalculadora.pressKeySink.add(index);
+                    },
+                    textoBoton: botones[index],
+                    colorFondo: Colors.blue[50],
+                    colorTexto: Colors.black,
+                  );
+                }
+              )
+            )
+          ),
+        ]
+      )
+    );
+  }
+
+  Widget _buildAnswer(CalculadoraBloc bloc){
+    return StreamBuilder<String?>(
+      stream: bloc.calculadoraStream,
+      builder: (context, snapshot){
+        print("StreamBuilder:${snapshot.data}");
+        var answer="0";
+        if (snapshot.data != null){
+          answer = snapshot.data.toString();
+        }
+        return Text(
+          answer,
+          style: const TextStyle(fontSize: 30, color: Colors.white, fontWeight: FontWeight.bold),
+        );
+      }
     );
   }
 }
